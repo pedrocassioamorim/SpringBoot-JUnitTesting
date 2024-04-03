@@ -4,6 +4,7 @@ import org.bootcampspringboot.junitandmockito.domain.dto.UserDTO;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 import org.bootcampspringboot.junitandmockito.repositories.UserRepository;
 import org.bootcampspringboot.junitandmockito.services.UserService;
+import org.bootcampspringboot.junitandmockito.services.exceptions.DataIntegratyViolationException;
 import org.bootcampspringboot.junitandmockito.services.exceptions.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(UserDTO obj) {
+        findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
+    }
+
+
+    private void findByEmail(UserDTO obj){
+        Optional<User> user = repository.findByEmail(obj.getEmail());
+        if (user.isPresent()){
+            throw new DataIntegratyViolationException("E-mail already on database");
+        }
     }
 }
