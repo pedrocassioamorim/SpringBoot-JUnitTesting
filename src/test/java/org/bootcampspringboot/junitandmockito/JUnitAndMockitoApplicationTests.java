@@ -1,5 +1,6 @@
 package org.bootcampspringboot.junitandmockito;
 
+import org.apiguardian.api.API;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,7 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class JUnitAndMockitoApplicationTests {
 
     @Test
-    void contextLoads() {
+    void main() {
+        JUnitAndMockitoApplication.main(new String[] {});
     }
 
 }
