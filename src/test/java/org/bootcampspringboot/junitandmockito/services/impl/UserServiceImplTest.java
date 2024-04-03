@@ -27,10 +27,12 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class UserServiceImplTest {
 
-    Integer ID = 1;
-    String name = "Pedro Dias";
-    String email = "amorim@dias";
-    String password = "123";
+    private static final Integer ID = 1;
+    private static final String name = "Pedro Dias";
+    private static final String email = "amorim@dias";
+    private static final String password = "123";
+    private static final String userNotFoundInDb = "User not found in DB";
+    private static final String emailOnDB = "E-mail already on database";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -70,7 +72,7 @@ class UserServiceImplTest {
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException(){
-        String userNotFoundInDb = "User not found in DB";
+
         when(repository.findById(anyInt())).thenThrow(new UserNotFoundException(userNotFoundInDb));
         try{
             service.findById(ID);
@@ -117,7 +119,7 @@ class UserServiceImplTest {
 
         }catch (Exception e){
             assertEquals(DataIntegratyViolationException.class, e.getClass());
-            assertEquals("E-mail already on database", e.getMessage());
+            assertEquals(emailOnDB, e.getMessage());
         }
     }
 
@@ -143,7 +145,7 @@ class UserServiceImplTest {
 
         }catch (Exception e){
             assertEquals(DataIntegratyViolationException.class, e.getClass());
-            assertEquals("E-mail already on database", e.getMessage());
+            assertEquals(emailOnDB, e.getMessage());
         }
     }
 
@@ -158,7 +160,6 @@ class UserServiceImplTest {
 
     @Test
     void whenDeleteWithUserNotFoundException() {
-        String userNotFoundInDb = "User not found in DB";
         when(repository.findById(anyInt())).thenThrow(new UserNotFoundException(userNotFoundInDb));
         try{
             service.delete(ID);
