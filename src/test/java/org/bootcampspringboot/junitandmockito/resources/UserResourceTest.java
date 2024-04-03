@@ -3,7 +3,7 @@ package org.bootcampspringboot.junitandmockito.resources;
 import org.bootcampspringboot.junitandmockito.domain.dto.UserDTO;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 import org.bootcampspringboot.junitandmockito.services.UserService;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,9 +11,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,8 +39,11 @@ class UserResourceTest {
     private static final String name = "Pedro Dias";
     private static final String email = "amorim@dias";
     private static final String password = "123";
-    private static final String userNotFoundInDb = "User not found in DB";
-    private static final String emailOnDB = "E-mail already on database";
+
+//    private static final String userNotFoundInDb = "User not found in DB";
+//    private static final String emailOnDB = "E-mail already on database";
+
+    private static final int indexZero = 0;
 
     private User user;
 
@@ -70,7 +76,24 @@ class UserResourceTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAListOfUserDTO() {
+        when(service.findAll()).thenReturn(List.of(user));
+        when(mapper.map(any(),any())).thenReturn(userDTO);
+
+        ResponseEntity<List<UserDTO>> response = resource.findAll();
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(ArrayList.class, response.getBody().getClass());
+        assertEquals(UserDTO.class, response.getBody().get(indexZero).getClass());
+
+        assertEquals(ID, response.getBody().get(0).getId());
+        assertEquals(name, response.getBody().get(0).getName());
+        assertEquals(email, response.getBody().get(0).getEmail());
+        assertEquals(password, response.getBody().get(0).getPassword());
+
     }
 
     @Test
