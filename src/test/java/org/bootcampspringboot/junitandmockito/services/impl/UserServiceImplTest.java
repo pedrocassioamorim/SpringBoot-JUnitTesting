@@ -133,6 +133,19 @@ class UserServiceImplTest {
         assertEquals(email, response.getEmail());
         assertEquals(password, response.getPassword());
     }
+
+    @Test
+    void whenUpdateThenReturnADataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        try{
+            optionalUser.get().setId(2);
+            service.update(userDTO);
+
+        }catch (Exception e){
+            assertEquals(DataIntegratyViolationException.class, e.getClass());
+            assertEquals("E-mail already on database", e.getMessage());
+        }
+    }
     @Test
     void update() {
     }
