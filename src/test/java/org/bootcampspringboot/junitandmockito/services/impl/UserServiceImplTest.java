@@ -156,5 +156,18 @@ class UserServiceImplTest {
         verify(repository, times(1)).deleteById(anyInt());
     }
 
+    @Test
+    void whenDeleteWithUserNotFoundException() {
+        String userNotFoundInDb = "User not found in DB";
+        when(repository.findById(anyInt())).thenThrow(new UserNotFoundException(userNotFoundInDb));
+        try{
+            service.delete(ID);
+        }catch (Exception e){
+            assertEquals(UserNotFoundException.class, e.getClass());
+            assertEquals(userNotFoundInDb, e.getMessage());
+
+        }
+    }
+
 
 }
