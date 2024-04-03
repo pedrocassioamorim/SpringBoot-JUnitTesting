@@ -1,6 +1,8 @@
 package org.bootcampspringboot.junitandmockito.domain.dto;
 
 import javax.persistence.Column;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 
 import java.util.Objects;
@@ -13,6 +15,7 @@ public class UserDTO {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     public UserDTO(Integer id, String name, String email, String password) {
