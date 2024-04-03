@@ -1,9 +1,11 @@
 package org.bootcampspringboot.junitandmockito.services.impl;
 
+import org.bootcampspringboot.junitandmockito.domain.dto.UserDTO;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 import org.bootcampspringboot.junitandmockito.repositories.UserRepository;
 import org.bootcampspringboot.junitandmockito.services.UserService;
 import org.bootcampspringboot.junitandmockito.services.exceptions.UserNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserRepository repository;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @Override
     public User findById(Integer Id) {
         Optional<User> obj = repository.findById(Id);
@@ -24,5 +29,10 @@ public class UserServiceImpl implements UserService {
 
     public List<User> findAll(){
         return repository.findAll();
+    }
+
+    @Override
+    public User create(UserDTO obj) {
+        return repository.save(mapper.map(obj, User.class));
     }
 }
