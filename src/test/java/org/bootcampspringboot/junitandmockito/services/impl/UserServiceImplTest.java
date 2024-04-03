@@ -3,6 +3,7 @@ package org.bootcampspringboot.junitandmockito.services.impl;
 import org.bootcampspringboot.junitandmockito.domain.dto.UserDTO;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 import org.bootcampspringboot.junitandmockito.repositories.UserRepository;
+import org.bootcampspringboot.junitandmockito.services.exceptions.DataIntegratyViolationException;
 import org.bootcampspringboot.junitandmockito.services.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -106,6 +106,19 @@ class UserServiceImplTest {
         assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
         assertEquals(password, response.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnADataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        try{
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+
+        }catch (Exception e){
+            assertEquals(DataIntegratyViolationException.class, e.getClass());
+            assertEquals("E-mail already on database", e.getMessage());
+        }
     }
 
     @Test
