@@ -7,6 +7,7 @@ import org.bootcampspringboot.junitandmockito.services.exceptions.UserNotFoundEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,5 +20,9 @@ public class UserServiceImpl implements UserService {
     public User findById(Integer Id) {
         Optional<User> obj = repository.findById(Id);
         return obj.orElseThrow(() -> new UserNotFoundException("User not found!"));
+    }
+
+    public List<User> findAll(){
+        return repository.findAll();
     }
 }
