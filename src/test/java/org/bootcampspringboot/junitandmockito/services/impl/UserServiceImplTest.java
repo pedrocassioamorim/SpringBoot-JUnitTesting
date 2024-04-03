@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.yaml.snakeyaml.events.Event;
 
 import javax.persistence.Id;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,17 +69,29 @@ class UserServiceImplTest {
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException(){
-        when(repository.findById(anyInt())).thenThrow(new UserNotFoundException("User not found in DB"));
+        String userNotFoundInDb = "User not found in DB";
+        when(repository.findById(anyInt())).thenThrow(new UserNotFoundException(userNotFoundInDb));
         try{
             service.findById(ID);
         }catch (Exception e){
             assertEquals(UserNotFoundException.class, e.getClass());
-            assertEquals("User not found in DB", e.getMessage());
+            assertEquals(userNotFoundInDb, e.getMessage());
         }
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAListOfUsers() {
+        when(repository.findAll()).thenReturn(List.of(user));
+        List<User> response = service.findAll();
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(User.class, response.get(0).getClass());
+        assertEquals(ID, response.get(0).getId());
+
+        assertEquals(ID, response.get(0).getId());
+        assertEquals(name, response.get(0).getName());
+        assertEquals(email, response.get(0).getEmail());
+        assertEquals(password, response.get(0).getPassword());
     }
 
     @Test
