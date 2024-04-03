@@ -3,6 +3,7 @@ package org.bootcampspringboot.junitandmockito.services.impl;
 import org.bootcampspringboot.junitandmockito.domain.dto.UserDTO;
 import org.bootcampspringboot.junitandmockito.domain.entites.User;
 import org.bootcampspringboot.junitandmockito.repositories.UserRepository;
+import org.bootcampspringboot.junitandmockito.services.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,17 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException(){
+        when(repository.findById(anyInt())).thenThrow(new UserNotFoundException("User not found in DB"));
+        try{
+            service.findById(ID);
+        }catch (Exception e){
+            assertEquals(UserNotFoundException.class, e.getClass());
+            assertEquals("User not found in DB", e.getMessage());
+        }
     }
 
     @Test
