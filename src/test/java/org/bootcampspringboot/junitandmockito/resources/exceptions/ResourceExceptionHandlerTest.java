@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -19,7 +21,8 @@ class ResourceExceptionHandlerTest {
     private ResExceptionHandler exceptionHandler;
 
     private static final String userNotFoundInDb = "User not found in DB";
-    private static final String emailOnDB = "E-mail already on database";
+    private static final String emailOnDB = "User already on database";
+    private static final String exception = "Exception";
 
 
 
@@ -40,11 +43,15 @@ class ResourceExceptionHandlerTest {
         assertEquals(StandardError.class, response.getBody().getClass());
         assertEquals(userNotFoundInDb, response.getBody().getError());
         assertEquals(404, response.getBody().getStatus());
+        assertNotEquals("/user/2", response.getBody().getPath());
+        assertNotEquals(LocalDateTime.now(), response.getBody().getTimestamp());
+        assertFalse(response.getBody().getMessage().isEmpty());
+        assertTrue(response.equals(response));
 
     }
 
     @Test
-    void userInDatabase() {
+    void whenUserAlreadyInDatabase() {
         ResponseEntity<StandardError> response = exceptionHandler
                 .userInDatabase(new DataIntegratyViolationException(emailOnDB),new MockHttpServletRequest());
 
@@ -55,6 +62,12 @@ class ResourceExceptionHandlerTest {
         assertEquals(StandardError.class, response.getBody().getClass());
         assertEquals(emailOnDB, response.getBody().getError());
         assertEquals(400, response.getBody().getStatus());
+        assertFalse(response.getBody().getMessage().isEmpty());
+        assertNotEquals(LocalDateTime.now(), response.getBody().getTimestamp());
+        assertFalse(response.getBody().getMessage().isEmpty());
+        assertNotEquals("/user/2", response.getBody().getPath());
+        assertTrue(response.equals(response));
+
 
     }
 }
