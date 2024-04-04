@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
+public class ResExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<StandardError> userNotFound(UserNotFoundException e, HttpServletRequest request){
